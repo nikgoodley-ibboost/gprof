@@ -1,0 +1,68 @@
+**GNU profiler compatible call graph report:**
+
+```
+index  % time  self  children  calls        name
+               0.00      0.53          1/1      <spontaneous>
+[1]     100.0  0.00      0.53            1  demo$_run_closure1.doCall [1]
+               0.00      0.53          1/1      demo$_run_closure1.fib [2]
+-----------------------------------------------------------------------------
+               0.00      0.53          1/1      demo$_run_closure1.doCall [1]
+[2]      99.9  0.00      0.53            1  demo$_run_closure1.fib [2]
+               0.29      0.24          2/2      demo.fib [3]
+               0.00      0.00      2/21890      java.lang.Integer.minus [4]
+               0.00      0.00      1/10945      java.lang.Integer.plus [5]
+-----------------------------------------------------------------------------
+               0.29      0.24          2/2      demo$_run_closure1.fib [2]
+[3]      99.6  0.29      0.24      2+21888  demo.fib [3]
+               0.16      0.00  21888/21890      java.lang.Integer.minus [4]
+               0.08      0.00  10944/10945      java.lang.Integer.plus [5]
+-----------------------------------------------------------------------------
+               0.00      0.00      2/21890      demo$_run_closure1.fib [2]
+               0.16      0.00  21888/21890      demo.fib [3]
+[4]      30.4  0.16      0.00        21890  java.lang.Integer.minus [4]
+-----------------------------------------------------------------------------
+               0.00      0.00      1/10945      demo$_run_closure1.fib [2]
+               0.08      0.00  10944/10945      demo.fib [3]
+[5]      15.0  0.08      0.00        10945  java.lang.Integer.plus [5]
+-----------------------------------------------------------------------------
+```
+
+**GNU profiler compatible with additional fields flat report:**
+
+```
+ %    cumulative   self            self     total    self    total   self    total
+time   seconds    seconds  calls  ms/call  ms/call  min ms  min ms  max ms  max ms  name
+54.3        0.29     0.29      2   145.86   267.78   38.14   58.56  253.57  477.00  demo.fib
+30.4        0.45     0.16  21890     0.00     0.00    0.00    0.00    0.80    0.80  java.lang.Integer.minus
+15.0        0.53     0.08  10945     0.00     0.00    0.00    0.00    0.83    0.83  java.lang.Integer.plus
+ 0.1        0.53     0.00      1     1.05   537.10    1.05  537.10    1.05  537.10  demo$_run_closure1.fib
+ 0.0        0.53     0.00      1     0.13   537.23    0.13  537.23    0.13  537.23  demo$_run_closure1.doCall
+```
+
+**Reduced overhead costs**
+
+**API to profile particular segments of code:**
+
+  * start: starts profiling
+  * stop: stops profiling
+  * reset: resets the result of profiling
+```
+    def prof = new Profiler()
+    prof.start()
+    // code to profile
+    prof.stop()
+    prof.report.prettyPrint()
+```
+
+**Changed the package structure:**
+
+> from `gprof.*` to `groovyx.gprof.*`
+
+**Changed the versioning scheme:**
+
+> from `$major.$minor.$maintenance` to `$major.$minor.$maintenance-groovy-$groovyVersion`
+
+**Bug fixes:**
+
+  * Methods which are added dynamically are not profiled
+  * Hangs up until all of profiled threads (except for a profiler thread) die
